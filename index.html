@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Zerodha - Online stock trading at lowest brokerage | React Clone</title>
+    <meta name="description" content="A modern, responsive clone of Zerodha's landing page built with React and CSS for the SapphireIQ Student Project." />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 32'><path d='M0 0H28L14 32H0L14 0Z' fill='%23387ED1'/><path d='M22 0H38L24 32H8L22 0Z' fill='%23FF5722'/></svg>" />
+    
+    <!-- Base CSS Reset & Theme Styles -->
+    <link rel="stylesheet" href="./src/index.css" />
+    <link rel="stylesheet" href="./src/App.css" />
+    <link rel="stylesheet" href="./src/components/Common/TickerBar.css" />
+    <link rel="stylesheet" href="./src/components/Navbar/Navbar.css" />
+    <link rel="stylesheet" href="./src/components/Hero/Hero.css" />
+    <link rel="stylesheet" href="./src/components/Stats/StatsSection.css" />
+    <link rel="stylesheet" href="./src/components/Pricing/PricingSection.css" />
+    <link rel="stylesheet" href="./src/components/Education/EducationSection.css" />
+    <link rel="stylesheet" href="./src/components/OpenAccount/OpenAccount.css" />
+    <link rel="stylesheet" href="./src/components/Footer/Footer.css" />
+    <link rel="stylesheet" href="./src/components/Common/SignupModal.css" />
+
+    <!-- React 18 & Babel Standalone for direct in-browser execution -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root">
+      <div style="padding: 40px; text-align: center; font-family: sans-serif; color: #666;">
+        Loading Zerodha Clone application...
+      </div>
+    </div>
+
+    <!-- Script to bundle data and components cleanly for immediate browser preview -->
+    <script type="text/babel">
+      const { useState, useEffect } = React;
+
+      // --- Data Sources (Module 3 Data-Driven Requirement) ---
+      const navLinks = [
+        { id: 'signup', label: 'Signup', href: '#signup', isAction: true },
+        { id: 'about', label: 'About', href: '#about' },
+        { id: 'products', label: 'Products', href: '#products' },
+        { id: 'pricing', label: 'Pricing', href: '#pricing' },
+        { id: 'support', label: 'Support', href: '#support' }
+      ];
+
+      const tickerIndices = [
+        { symbol: 'NIFTY 50', value: '23,518.50', change: '+124.60 (+0.53%)', isUp: true },
+        { symbol: 'SENSEX', value: '77,580.30', change: '+412.10 (+0.53%)', isUp: true },
+        { symbol: 'NIFTY BANK', value: '50,380.15', change: '-34.80 (-0.07%)', isUp: false },
+        { symbol: 'USD/INR', value: '84.42', change: '+0.03 (+0.04%)', isUp: true }
+      ];
+
+      const trustPointsData = [
+        {
+          id: 1,
+          title: 'Customer-first always',
+          description: 'That is why 1.5+ crore customers trust Zerodha with ₹4.5+ lakh crores of equity investments and contribute to 15% of all daily retail exchange volumes in India.'
+        },
+        {
+          id: 2,
+          title: 'No spam or gimmicks',
+          description: 'No push notifications, no spam emails, no dark patterns, and no gamification tricks. High quality, uncluttered, transparent technology built for serious traders and investors.'
+        },
+        {
+          id: 3,
+          title: 'The Zerodha universe',
+          description: 'Not just an app, but an entire ecosystem of modern financial products and platforms built to cater to diverse investment needs from long-term investing to algorithmic trading.'
+        },
+        {
+          id: 4,
+          title: 'Do better with money',
+          description: 'With industry-first risk management initiatives like Nudge and Kill Switch, we actively safeguard investors and help them make thoughtful financial choices.'
+        }
+      ];
+
+      const pricingCardsData = [
+        {
+          id: 'free-equity',
+          amount: '₹0',
+          title: 'Free equity delivery',
+          badge: 'Zero Commission',
+          description: 'All equity delivery investments (NSE, BSE), are absolutely free — ₹0 brokerage for life.'
+        },
+        {
+          id: 'intraday-fo',
+          amount: '₹20',
+          title: 'Intraday and F&O trades',
+          badge: 'Flat Brokerage',
+          description: 'Flat ₹20 or 0.03% (whichever is lower) per executed order across equity, currency, and commodity trades.'
+        },
+        {
+          id: 'free-mf',
+          amount: '₹0',
+          title: 'Free direct mutual funds',
+          badge: 'Direct Schemes',
+          description: 'All direct mutual fund investments are 100% free with zero commissions and zero DP charges.'
+        }
+      ];
+
+      const educationCardsData = [
+        {
+          id: 'varsity',
+          title: 'Varsity mobile',
+          subtitle: 'Free and open market education',
+          badge: 'Interactive Lessons',
+          description: 'An easy to grasp, comprehensive collection of stock market lessons with illustrated guides and in-depth modules. Broken down into bite-sized cards to help you learn trading on the go.',
+          linkText: 'Explore Varsity →',
+          linkUrl: '#varsity'
+        },
+        {
+          id: 'tradingqa',
+          title: 'TradingQ&A',
+          subtitle: 'India’s most active trading community',
+          badge: 'Community Q&A',
+          description: 'The premier open community for traders and investors in India. Ask questions, discuss trading setups, get insights from experts, and stay updated with the latest market developments.',
+          linkText: 'Visit TradingQ&A →',
+          linkUrl: '#tradingqa'
+        }
+      ];
+
+      const ecosystemAppsData = [
+        { name: 'Kite', tag: 'Flagship Platform', desc: 'Ultra-fast trading platform with streaming market data and advanced charting.' },
+        { name: 'Console', tag: 'Reporting Dashboard', desc: 'Central backoffice dashboard to view trades, portfolio analytics, and tax P&L.' },
+        { name: 'Coin', tag: 'Mutual Funds', desc: 'Buy direct mutual funds online without paying distributor commission.' },
+        { name: 'Kite Connect', tag: 'Trading APIs', desc: 'Build algorithmic trading platforms and custom execution applications.' }
+      ];
+
+      const footerColumnsData = [
+        {
+          title: 'Company',
+          links: [
+            { label: 'About', href: '#about' },
+            { label: 'Products', href: '#products' },
+            { label: 'Pricing', href: '#pricing' },
+            { label: 'Referral programme', href: '#referrals' },
+            { label: 'Careers', href: '#careers' },
+            { label: 'Zerodha.tech', href: '#tech' },
+            { label: 'Press & media', href: '#press' },
+            { label: 'Zerodha Cares (CSR)', href: '#csr' }
+          ]
+        },
+        {
+          title: 'Support',
+          links: [
+            { label: 'Contact us', href: '#contact' },
+            { label: 'Support portal', href: '#support' },
+            { label: 'Z-Connect blog', href: '#blog' },
+            { label: 'List of charges', href: '#charges' },
+            { label: 'Downloads & resources', href: '#downloads' },
+            { label: 'Videos & webinars', href: '#videos' },
+            { label: 'Market overview', href: '#market-overview' },
+            { label: 'How to file a complaint', href: '#complaints' }
+          ]
+        },
+        {
+          title: 'Account',
+          links: [
+            { label: 'Open an account', href: '#signup' },
+            { label: 'Fund transfer', href: '#funds' },
+            { label: '60 day challenge', href: '#challenge' },
+            { label: 'Security & 2FA', href: '#security' }
+          ]
+        }
+      ];
+
+      // --- Component 1: Ticker Bar ---
+      function TickerBar() {
+        return (
+          <div className="ticker-bar">
+            <div className="container ticker-content">
+              <div className="ticker-list">
+                {tickerIndices.map((item, idx) => (
+                  <div key={idx} className="ticker-item">
+                    <span className="ticker-symbol">{item.symbol}</span>
+                    <span className="ticker-value">{item.value}</span>
+                    <span className={`ticker-change ${item.isUp ? 'up' : 'down'}`}>
+                      {item.change}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <div className="ticker-status">
+                <span className="live-dot"></span>
+                <span>Market Open (NSE / BSE)</span>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      // --- Component 2: Sticky Navbar ---
+      function Navbar({ onOpenSignup }) {
+        const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+        const handleLinkClick = (e, link) => {
+          if (link.id === 'signup') {
+            e.preventDefault();
+            onOpenSignup();
+            setMobileMenuOpen(false);
+          }
+        };
+
+        return (
+          <header className="navbar">
+            <div className="container nav-container">
+              <a href="#" className="nav-brand">
+                <svg width="34" height="26" viewBox="0 0 40 32" fill="none">
+                  <path d="M0 0H28L14 32H0L14 0Z" fill="#387ED1" opacity="0.9" />
+                  <path d="M22 0H38L24 32H8L22 0Z" fill="#FF5722" />
+                </svg>
+                <span className="brand-logo-text">ZERODHA</span>
+                <span className="brand-badge">CLONE</span>
+              </a>
+
+              <nav className="nav-menu">
+                {navLinks.map((link) => (
+                  <a
+                    key={link.id}
+                    href={link.href}
+                    className={`nav-link ${link.isAction ? 'action-link' : ''}`}
+                    onClick={(e) => handleLinkClick(e, link)}
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </nav>
+
+              <button
+                className="menu-toggle"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label="Toggle menu"
+              >
+                {mobileMenuOpen ? (
+                  <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                ) : (
+                  <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  </svg>
+                )}
+              </button>
+            </div>
+
+            <div className={`mobile-drawer ${mobileMenuOpen ? 'open' : ''}`}>
+              <ul className="mobile-nav-list">
+                {navLinks.map((link) => (
+                  <li key={link.id}>
+                    <a
+                      href={link.href}
+                      className="mobile-nav-link"
+                      onClick={(e) => handleLinkClick(e, link)}
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </header>
+        );
+      }
+
+      // --- Component 3: Hero Section ---
+      function Hero({ onOpenSignup }) {
+        return (
+          <section className="hero-section" id="hero">
+            <div className="container hero-content">
+              <div className="hero-illustration-wrapper">
+                <svg className="hero-illustration" viewBox="0 0 760 360" fill="none">
+                  <rect width="760" height="360" rx="16" fill="#F8FAFC" />
+                  <rect x="24" y="24" width="712" height="312" rx="12" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5" />
+                  <rect x="24" y="24" width="712" height="44" rx="12" fill="#F1F5F9" />
+                  <circle cx="52" cy="46" r="6" fill="#EF4444" />
+                  <circle cx="70" cy="46" r="6" fill="#F59E0B" />
+                  <circle cx="88" cy="46" r="6" fill="#10B981" />
+                  <rect x="120" y="38" width="160" height="16" rx="4" fill="#E2E8F0" />
+                  <rect x="300" y="38" width="80" height="16" rx="4" fill="#387ED1" opacity="0.2" />
+
+                  <rect x="24" y="68" width="220" height="268" fill="#FAFAFA" stroke="#E2E8F0" strokeWidth="1" />
+                  <rect x="44" y="88" width="100" height="14" rx="3" fill="#64748B" opacity="0.3" />
+
+                  <text x="44" y="128" fill="#1E293B" fontSize="11" fontFamily="sans-serif" fontWeight="bold">RELIANCE</text>
+                  <text x="186" y="128" fill="#10B981" fontSize="10" fontFamily="sans-serif">+1.45%</text>
+
+                  <text x="44" y="158" fill="#1E293B" fontSize="11" fontFamily="sans-serif" fontWeight="bold">INFY</text>
+                  <text x="186" y="158" fill="#10B981" fontSize="10" fontFamily="sans-serif">+0.82%</text>
+
+                  <text x="44" y="188" fill="#1E293B" fontSize="11" fontFamily="sans-serif" fontWeight="bold">HDFCBANK</text>
+                  <text x="186" y="188" fill="#EF4444" fontSize="10" fontFamily="sans-serif">-0.35%</text>
+
+                  <text x="44" y="218" fill="#1E293B" fontSize="11" fontFamily="sans-serif" fontWeight="bold">TCS</text>
+                  <text x="186" y="218" fill="#10B981" fontSize="10" fontFamily="sans-serif">+1.15%</text>
+
+                  <g transform="translate(260, 80)">
+                    <line x1="0" y1="40" x2="450" y2="40" stroke="#F1F5F9" strokeWidth="1" strokeDasharray="4 4" />
+                    <line x1="0" y1="90" x2="450" y2="90" stroke="#F1F5F9" strokeWidth="1" strokeDasharray="4 4" />
+                    <line x1="0" y1="140" x2="450" y2="140" stroke="#F1F5F9" strokeWidth="1" strokeDasharray="4 4" />
+                    <line x1="0" y1="190" x2="450" y2="190" stroke="#F1F5F9" strokeWidth="1" strokeDasharray="4 4" />
+
+                    <defs>
+                      <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#387ED1" stopOpacity="0.25" />
+                        <stop offset="100%" stopColor="#387ED1" stopOpacity="0.0" />
+                      </linearGradient>
+                    </defs>
+                    <path d="M 20 180 Q 70 140, 110 155 T 190 100 T 260 110 T 330 60 T 420 30 L 420 220 L 20 220 Z" fill="url(#chartGrad)" />
+                    <path d="M 20 180 Q 70 140, 110 155 T 190 100 T 260 110 T 330 60 T 420 30" stroke="#387ED1" strokeWidth="3.5" fill="none" />
+
+                    <circle cx="420" cy="30" r="6" fill="#387ED1" />
+                    <circle cx="420" cy="30" r="12" fill="#387ED1" opacity="0.3" />
+                  </g>
+                </svg>
+              </div>
+
+              <h1 className="hero-title">Invest in everything</h1>
+              <p className="hero-subtitle">
+                Online platform to invest in stocks, derivatives, mutual funds, ETFs, bonds, and more.
+              </p>
+
+              <button className="btn-primary hero-cta" onClick={onOpenSignup} id="hero-signup-btn">
+                Sign up for free
+              </button>
+            </div>
+          </section>
+        );
+      }
+
+      // --- Component 4: Stats Section (Data-Driven) ---
+      function StatsSection() {
+        return (
+          <section className="stats-section" id="about">
+            <div className="container">
+              <div className="stats-grid">
+                <div className="stats-left">
+                  <h2>Trust with confidence</h2>
+                  {trustPointsData.map((item) => (
+                    <div key={item.id} className="trust-item">
+                      <h3 className="trust-item-title">{item.title}</h3>
+                      <p className="trust-item-desc">{item.description}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="stats-right">
+                  <div className="ecosystem-preview-card">
+                    <span className="ecosystem-badge">Ecosystem Architecture</span>
+                    <h3 className="ecosystem-heading">The Zerodha Universe</h3>
+
+                    <div className="apps-grid">
+                      {ecosystemAppsData.map((app, idx) => (
+                        <div key={idx} className="app-box">
+                          <span className="app-name">{app.name}</span>
+                          <span className="app-tag">{app.tag}</span>
+                          <p className="app-desc">{app.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="ecosystem-links">
+                    <a href="#products" className="link-blue">Explore our products →</a>
+                    <a href="#demo" className="link-blue">Try Kite demo →</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        );
+      }
+
+      // --- Component 5: Pricing Section (Data-Driven Grid) ---
+      function PricingSection() {
+        return (
+          <section className="pricing-section" id="pricing">
+            <div className="container">
+              <div className="pricing-header">
+                <div className="pricing-title-area">
+                  <h2>Unbeatable pricing</h2>
+                  <p>We pioneered the concept of discount broking and price transparency in India.</p>
+                </div>
+                <a href="#charges" className="link-blue">See all charges & calculator →</a>
+              </div>
+
+              <div className="pricing-grid">
+                {pricingCardsData.map((card) => (
+                  <div key={card.id} className="pricing-card">
+                    <span className="pricing-badge">{card.badge}</span>
+                    <div className="pricing-amount">{card.amount}</div>
+                    <h3 className="pricing-card-title">{card.title}</h3>
+                    <p className="pricing-desc">{card.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        );
+      }
+
+      // --- Component 6: Education Section (Varsity) ---
+      function EducationSection() {
+        return (
+          <section className="education-section" id="education">
+            <div className="container education-container">
+              <div className="education-image-col">
+                <svg className="education-illustration" viewBox="0 0 460 340" fill="none">
+                  <rect width="460" height="340" rx="16" fill="#F0F9FF" />
+                  <rect x="60" y="80" width="340" height="200" rx="12" fill="#FFFFFF" stroke="#BAE6FD" strokeWidth="2" />
+                  <path d="M230 80V280" stroke="#E0F2FE" strokeWidth="2" strokeDasharray="4 4" />
+                  <rect x="85" y="110" width="110" height="12" rx="3" fill="#0284C7" />
+                  <rect x="85" y="134" width="120" height="8" rx="2" fill="#94A3B8" />
+                  <rect x="85" y="150" width="115" height="8" rx="2" fill="#CBD5E1" />
+                  <circle cx="100" cy="215" r="14" fill="#387ED1" opacity="0.15" />
+                  <text x="96" y="220" fill="#387ED1" fontSize="14" fontWeight="bold">1</text>
+                  <rect x="124" y="210" width="70" height="10" rx="2" fill="#475569" />
+                  <rect x="255" y="110" width="120" height="12" rx="3" fill="#0284C7" />
+                  <path d="M 260 210 Q 285 170, 310 180 T 350 140 T 385 130" stroke="#10B981" strokeWidth="2.5" fill="none" />
+                  <circle cx="385" cy="130" r="4" fill="#10B981" />
+                  <g transform="translate(195, 35)">
+                    <polygon points="35,10 70,25 35,40 0,25" fill="#387ED1" />
+                    <rect x="20" y="26" width="30" height="14" rx="4" fill="#1D4ED8" />
+                    <line x1="68" y1="26" x2="68" y2="45" stroke="#F59E0B" strokeWidth="2" />
+                    <circle cx="68" cy="46" r="3" fill="#F59E0B" />
+                  </g>
+                </svg>
+              </div>
+
+              <div className="education-content-col">
+                <h2>Free and open market education</h2>
+                {educationCardsData.map((item) => (
+                  <div key={item.id} className="education-card">
+                    <div className="education-card-header">
+                      <h3 className="education-card-title">{item.title}</h3>
+                      <span className="education-badge">{item.badge}</span>
+                    </div>
+                    <p className="education-card-desc">{item.description}</p>
+                    <a href={item.linkUrl} className="link-blue">{item.linkText}</a>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        );
+      }
+
+      // --- Component 7: Open Account CTA ---
+      function OpenAccount({ onOpenSignup }) {
+        return (
+          <section className="open-account-section" id="signup">
+            <div className="container open-account-container">
+              <h2 className="open-account-title">Open a Zerodha account</h2>
+              <p className="open-account-subtitle">
+                Modern platforms and apps, ₹0 investments, and flat ₹20 intraday and F&O trades.
+              </p>
+              <button className="btn-primary open-account-cta" onClick={onOpenSignup} id="cta-bottom-signup">
+                Sign up for free
+              </button>
+            </div>
+          </section>
+        );
+      }
+
+      // --- Component 8: Comprehensive Legal Footer ---
+      function Footer() {
+        return (
+          <footer className="footer-section">
+            <div className="container">
+              <div className="footer-top-grid">
+                <div className="footer-brand-col">
+                  <div className="footer-logo">
+                    <svg width="28" height="22" viewBox="0 0 40 32" fill="none">
+                      <path d="M0 0H28L14 32H0L14 0Z" fill="#387ED1" opacity="0.9" />
+                      <path d="M22 0H38L24 32H8L22 0Z" fill="#FF5722" />
+                    </svg>
+                    <span>ZERODHA</span>
+                  </div>
+                  <p className="footer-copyright">
+                    © 2010 - 2026, Zerodha Broking Ltd.<br />
+                    All rights reserved.
+                  </p>
+                  <div className="footer-social-icons">
+                    <a href="#" className="footer-social-link">𝕏</a>
+                    <a href="#" className="footer-social-link">f</a>
+                    <a href="#" className="footer-social-link">in</a>
+                    <a href="#" className="footer-social-link">✈</a>
+                  </div>
+                </div>
+
+                {footerColumnsData.map((col, idx) => (
+                  <div key={idx} className="footer-col">
+                    <h4 className="footer-col-title">{col.title}</h4>
+                    <ul className="footer-links-list">
+                      {col.links.map((link, lIdx) => (
+                        <li key={lIdx}>
+                          <a href={link.href}>{link.label}</a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+
+              <div className="footer-legal-divider"></div>
+              <div className="footer-legal-text">
+                <p>
+                  Zerodha Broking Ltd.: Member of NSE, BSE & MCX – SEBI Registration no.: INZ000031633 CDSL/NSDL: Depository services through Zerodha Broking Ltd. – SEBI Registration no.: IN-DP-431-2019 Commodity Trading through Zerodha Commodities Pvt. Ltd. MCX: 46025; NSE-50001 – SEBI Registration no.: INZ000038238 Registered Address: Zerodha Broking Ltd., #153/154, 4th Cross, Dollars Colony, Opp. Clarence Public School, J.P Nagar 4th Phase, Bengaluru - 560078, Karnataka, India.
+                </p>
+                <br />
+                <p>
+                  <strong>Attention investors:</strong> 1) Stock brokers can accept securities as margins from clients only by way of pledge in the depository system w.e.f September 01, 2020. 2) Update your e-mail and phone number with your stock broker / depository participant and receive OTP directly from depository on your e-mail and/or mobile number to create pledge.
+                </p>
+              </div>
+
+              <div className="footer-bottom-links">
+                <a href="#">NSE</a>
+                <a href="#">BSE</a>
+                <a href="#">MCX</a>
+                <a href="#">Terms & conditions</a>
+                <a href="#">Policies & procedures</a>
+                <a href="#">Privacy policy</a>
+                <a href="#">Disclosure</a>
+                <a href="#">Investor charter</a>
+              </div>
+            </div>
+          </footer>
+        );
+      }
+
+      // --- Component 9: Signup Modal ---
+      function SignupModal({ isOpen, onClose }) {
+        const [mobileNumber, setMobileNumber] = useState('');
+        const [isSubmitted, setIsSubmitted] = useState(false);
+        const [error, setError] = useState('');
+
+        if (!isOpen) return null;
+
+        const handleSubmit = (e) => {
+          e.preventDefault();
+          if (!mobileNumber || mobileNumber.length < 10) {
+            setError('Please enter a valid 10-digit mobile number');
+            return;
+          }
+          setError('');
+          setIsSubmitted(true);
+        };
+
+        const handleReset = () => {
+          setIsSubmitted(false);
+          setMobileNumber('');
+          onClose();
+        };
+
+        return (
+          <div className="modal-backdrop" onClick={onClose}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <button className="modal-close-btn" onClick={onClose}>×</button>
+              {!isSubmitted ? (
+                <div>
+                  <h3 className="modal-title">Signup now</h3>
+                  <p className="modal-subtitle">Or track your existing application</p>
+                  <form className="signup-form" onSubmit={handleSubmit}>
+                    <div className="input-group">
+                      <label className="input-label">Mobile Number</label>
+                      <div className="phone-input-wrapper">
+                        <span className="phone-prefix">+91</span>
+                        <input
+                          type="tel"
+                          className="phone-input"
+                          placeholder="Enter your 10 digit mobile"
+                          maxLength={10}
+                          value={mobileNumber}
+                          onChange={(e) => {
+                            setMobileNumber(e.target.value.replace(/\D/g, ''));
+                            setError('');
+                          }}
+                        />
+                      </div>
+                      {error && <span style={{ color: '#ef5350', fontSize: '0.8rem' }}>{error}</span>}
+                    </div>
+                    <label className="terms-label">
+                      <input type="checkbox" defaultChecked />
+                      <span>I authorize Zerodha to contact me via Call/SMS/WhatsApp for account opening.</span>
+                    </label>
+                    <button type="submit" className="submit-btn">Continue →</button>
+                  </form>
+                </div>
+              ) : (
+                <div className="success-state">
+                  <div className="success-icon">✓</div>
+                  <h3 className="modal-title">OTP Sent Successfully!</h3>
+                  <p className="modal-subtitle">
+                    We have sent a 6-digit verification code to <strong>+91 {mobileNumber}</strong>.
+                  </p>
+                  <p style={{ color: '#666', fontSize: '0.88rem', marginBottom: '20px' }}>
+                    (Internship demo verification simulated successfully)
+                  </p>
+                  <button className="btn-primary" onClick={handleReset}>Done</button>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      }
+
+      // --- Main App Root ---
+      function App() {
+        const [isSignupOpen, setIsSignupOpen] = useState(false);
+
+        return (
+          <div className="app-root">
+            <TickerBar />
+            <Navbar onOpenSignup={() => setIsSignupOpen(true)} />
+            <main className="main-content">
+              <Hero onOpenSignup={() => setIsSignupOpen(true)} />
+              <StatsSection />
+              <PricingSection />
+              <EducationSection />
+              <OpenAccount onOpenSignup={() => setIsSignupOpen(true)} />
+            </main>
+            <Footer />
+            <SignupModal isOpen={isSignupOpen} onClose={() => setIsSignupOpen(false)} />
+          </div>
+        );
+      }
+
+      // Render Application
+      const root = ReactDOM.createRoot(document.getElementById('root'));
+      root.render(<App />);
+    </script>
+  </body>
+</html>
